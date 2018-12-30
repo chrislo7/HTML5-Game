@@ -6,6 +6,9 @@ class NumberedBox extends createjs.Container {
 
         let box = new lib.NumberedBox();
         box.numberText.text = number;
+
+        new createjs.ButtonHelper(box, 0, 1, 2, false, new lib.NumberedBox(), 3);
+
         this.addChild(box);
         this.setBounds(0,0,50,50);
         console.log('graphics loaded');
@@ -20,7 +23,7 @@ class NumberedBox extends createjs.Container {
 
 class GameData {
     constructor() {
-        this.amountofBox = 20;
+        this.amountofBox = 3;
         this.resetData();
     }
 
@@ -30,12 +33,13 @@ class GameData {
     nextNumber() {
         this.currentNumber += 1;
     }
-    isRightNumber(num) { return ( num === this.currentNumber ) }
-
-    isWin() {
-        // TODO
-        return false;
+    isRightNumber(num) { 
+        return ( num === this.currentNumber ) 
     }
+    isWin() {
+        return ( this.currentNumber > this.amountofBox );
+    }
+
 }
 
 class Game {
@@ -47,7 +51,7 @@ class Game {
 
         this.stage.width = this.canvas.width;
         this.stage.height = this.canvas.height;
-        
+        this.stage.enableMouseOver();
         // enable tap on touch/mobile devices
         createjs.Touch.enable(this.stage);
 
@@ -62,11 +66,7 @@ class Game {
         // keep redrawing the stage
         createjs.Ticker.on("tick", this.stage);
 
-        // background
-        this.stage.addChild(new lib.Background());
-
-        // testing graphics
-        this.generateMultipleBoxes();
+        this.restartGame();
     }
 
     version() {
@@ -84,11 +84,28 @@ class Game {
         }
     }
 
+    restartGame() {
+        this.gameData.resetData();
+        this.stage.removeAllChildren();
+        this.stage.addChild(new lib.Background());
+        this.generateMultipleBoxes( this.gameData.amountofBox );
+    }
+    
     handleClick(box) {
         if (this.gameData.isRightNumber( box.number )) { 
             this.stage.removeChild(box);
             this.gameData.nextNumber();
          }
+
+         // game over logic
+         if ( this.gameData.isWin() ) { 
+             let gameOverView = new lib.GameOverView();
+             this.stage.addChild(gameOverView);
+
+             gameOverView.restartButton.on('click', (function() {
+                 this.restartGame();
+             }).bind(this));
+          }
     }
 
     scale() {
@@ -96,11 +113,10 @@ class Game {
         this.stage.height = this.canvas.height;
 
         let ratio = window.devicePixelRatio;
-        if ( ratio === undefined ) { return; }
+        if ( ratio === undefined ) { return }
 
         this.canvas.setAttribute( 'width', Math.round( this.stage.width * ratio ));
         this.canvas.setAttribute( 'height', Math.round( this.stage.height * ratio ));
-
         this.stage.scaleX = this.stage.scaleY = ratio;
 
         //Set CSS
