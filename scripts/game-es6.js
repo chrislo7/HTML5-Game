@@ -30,6 +30,10 @@ class Game {
         
         // enable tap on touch/mobile devices
         createjs.Touch.enable(this.stage);
+
+        // enable scaling
+        this.scale();
+
         createjs.Ticker.setFPS(120);
 
         // keep redrawing the stage
@@ -59,6 +63,23 @@ class Game {
 
     handleClick(box) {
         this.stage.removeChild(box);
+    }
+
+    scale() {
+        this.stage.width = this.canvas.width;
+        this.stage.height = this.canvas.height;
+
+        let ratio = window.devicePixelRatio;
+        if ( ratio === undefined ) { return; }
+
+        this.canvas.setAttribute( 'width', Math.round( this.stage.width * ratio ));
+        this.canvas.setAttribute( 'height', Math.round( this.stage.height * ratio ));
+
+        this.stage.scaleX = this.stage.scaleY = ratio;
+
+        //Set CSS
+        this.canvas.style.width = this.stage.width + "px";
+        this.canvas.style.height = this.stage.height + "px";
     }
 }
 
