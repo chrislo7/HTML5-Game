@@ -4,14 +4,11 @@ class NumberedBox extends createjs.Container {
 
         console.log('graphics');
         
-        const movieClip = new lib.NumberedBox();
-        movieClip.numberText.text = number;
-        this.addChild(movieClip);
+        const clip = new lib.NumberedBox();
+        clip.numberText.text = number;
+        this.addChild(clip);
 
-        // random position 
-        movieClip.x = Math.random() * 200;
-        movieClip.y = Math.random() * 200;
-
+        this.setBounds(0,0,50,50);
     }
 }
 
@@ -22,6 +19,9 @@ class Game {
         this.canvas = document.getElementById("game-canvas");
         this.stage = new createjs.Stage(this.canvas);
 
+        this.stage.width = this.canvas.width;
+        this.stage.height = this.canvas.height;
+
         createjs.Ticker.setFPS(120);
 
         // keep redrawing the stage
@@ -31,12 +31,22 @@ class Game {
         this.stage.addChild(new lib.Background());
 
         // testing graphics
-        this.stage.addChild(new NumberedBox(88));
-
+        this.generateMultipleBoxes();
     }
 
     version() {
         return '1.0.0';
+    }
+
+    generateMultipleBoxes(amount = 10) {
+        for (let i = amount; i > 0; i--) {
+            let clip = new NumberedBox(i);
+            this.stage.addChild(clip);
+
+            // random position 
+            clip.x = Math.random() * (this.stage.width - clip.getBounds().width);
+            clip.y = Math.random() * (this.stage.height - clip.getBounds().height);
+        }
     }
 }
 
