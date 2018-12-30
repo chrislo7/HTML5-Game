@@ -1,14 +1,20 @@
 class NumberedBox extends createjs.Container {
-    constructor(number = 0) {
+    constructor(game, number = 0) {
         super();
-
-        console.log('graphics');
         
-        const clip = new lib.NumberedBox();
-        clip.numberText.text = number;
-        this.addChild(clip);
+        this.game = game;
 
+        let box = new lib.NumberedBox();
+        box.numberText.text = number;
+        this.addChild(box);
         this.setBounds(0,0,50,50);
+        console.log('graphics loaded');
+
+        this.on('click', this.handleClick.bind(this));
+    }
+
+    handleClick() {
+        this.game.handleClick(this);
     }
 }
 
@@ -21,7 +27,9 @@ class Game {
 
         this.stage.width = this.canvas.width;
         this.stage.height = this.canvas.height;
-
+        
+        // enable tap on touch/mobile devices
+        createjs.Touch.enable(this.stage);
         createjs.Ticker.setFPS(120);
 
         // keep redrawing the stage
@@ -40,13 +48,17 @@ class Game {
 
     generateMultipleBoxes(amount = 10) {
         for (let i = amount; i > 0; i--) {
-            let clip = new NumberedBox(i);
-            this.stage.addChild(clip);
+            let box = new NumberedBox(this, i);
+            this.stage.addChild(box);
 
             // random position 
-            clip.x = Math.random() * (this.stage.width - clip.getBounds().width);
-            clip.y = Math.random() * (this.stage.height - clip.getBounds().height);
+            box.x = Math.random() * (this.stage.width - box.getBounds().width);
+            box.y = Math.random() * (this.stage.height - box.getBounds().height);
         }
+    }
+
+    handleClick(box) {
+        this.stage.removeChild(box);
     }
 }
 
