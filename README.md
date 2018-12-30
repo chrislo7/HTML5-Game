@@ -7,3 +7,4 @@ A simple HTML5 clicking game created with CreateJS
 * Players must start from number 1
 
 ### Screenshot
+![game](https://github.com/chrislo7/HTML5-Game/blob/master/screenshots/Screen%20Shot%202018-12-30%20at%205.48.37%20PM.png)
