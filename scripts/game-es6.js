@@ -1,3 +1,20 @@
+class NumberedBox extends createjs.Container {
+    constructor(number = 0) {
+        super();
+
+        console.log('graphics');
+        
+        const movieClip = new lib.NumberedBox();
+        movieClip.numberText.text = number;
+        this.addChild(movieClip);
+
+        // random position 
+        movieClip.x = Math.random() * 200;
+        movieClip.y = Math.random() * 200;
+
+    }
+}
+
 class Game {
     constructor() {
         console.log( `Game Version ${this.version()}` );
@@ -10,11 +27,11 @@ class Game {
         // keep redrawing the stage
         createjs.Ticker.on("tick", this.stage);
 
-        // testing createjs
-        const circle = new createjs.Shape();
-        circle.graphics.beginFill("red").drawCircle(0,0,40);
-        circle.x = circle.y = 100;
-        this.stage.addChild(circle);
+        // background
+        this.stage.addChild(new lib.Background());
+
+        // testing graphics
+        this.stage.addChild(new NumberedBox(88));
 
     }
 
