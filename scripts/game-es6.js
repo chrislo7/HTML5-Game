@@ -7,6 +7,11 @@ class NumberedBox extends createjs.Container {
         let box = new lib.NumberedBox();
         box.numberText.text = number;
 
+        box.numberText.font = "28px Oswald";
+        box.numberText.textBaseline = "alphabet";
+        box.numberText.x += 2;
+        box.numberText.y = 35;
+
         new createjs.ButtonHelper(box, 0, 1, 2, false, new lib.NumberedBox(), 3);
 
         this.addChild(box);
@@ -23,7 +28,7 @@ class NumberedBox extends createjs.Container {
 
 class GameData {
     constructor() {
-        this.amountofBox = 3;
+        this.amountofBox = 20;
         this.resetData();
     }
 
