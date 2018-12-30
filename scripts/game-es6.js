@@ -1,8 +1,8 @@
 class NumberedBox extends createjs.Container {
     constructor(game, number = 0) {
         super();
-        
         this.game = game;
+        this.number = number;
 
         let box = new lib.NumberedBox();
         box.numberText.text = number;
@@ -15,6 +15,26 @@ class NumberedBox extends createjs.Container {
 
     handleClick() {
         this.game.handleClick(this);
+    }
+}
+
+class GameData {
+    constructor() {
+        this.amountofBox = 20;
+        this.resetData();
+    }
+
+    resetData() {
+        this.currentNumber = 1;
+    }
+    nextNumber() {
+        this.currentNumber += 1;
+    }
+    isRightNumber(num) { return ( num === this.currentNumber ) }
+
+    isWin() {
+        // TODO
+        return false;
     }
 }
 
@@ -33,6 +53,9 @@ class Game {
 
         // enable scaling
         this.scale();
+
+        // game data initalization
+        this.gameData = new GameData();
 
         createjs.Ticker.setFPS(120);
 
@@ -62,7 +85,10 @@ class Game {
     }
 
     handleClick(box) {
-        this.stage.removeChild(box);
+        if (this.gameData.isRightNumber( box.number )) { 
+            this.stage.removeChild(box);
+            this.gameData.nextNumber();
+         }
     }
 
     scale() {
